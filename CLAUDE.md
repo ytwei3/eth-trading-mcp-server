@@ -47,11 +47,43 @@ Implement an MCP server with the following tools:
     - Known limitations or assumptions
 3. **Tests** - Demonstrate core functionality ✅
 
-## Testing
+## Integration with AI Agents
+
+This MCP server is designed to be consumed by AI agents. Here's how to set it up:
+
+### Claude Desktop Configuration
+
+1. **Build the project:**
+   ```bash
+   cargo build --release
+   ```
+
+2. **Configure Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+   ```json
+   {
+     "mcpServers": {
+       "ethereum-trading": {
+         "command": "/path/to/eth-trading-mcp-server/target/release/eth-trading-mcp-server",
+         "env": {
+           "ETH_RPC_URL": "https://eth.llamarpc.com"
+         }
+       }
+     }
+   }
+   ```
+
+3. **Test by chatting with Claude:**
+   - "What's the ETH balance of 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045?"
+   - "Get me the price of USDC (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)"
+   - "Simulate swapping 0.1 ETH to USDC"
+
+The AI agent will call the appropriate tools and present results in natural language.
+
+## Manual Testing (Without AI Agent)
 
 ### Python Test Client
 
-A Python test client (`client_example.py`) is provided for easy testing of all MCP server functionality:
+A Python test client (`client_example.py`) is provided for testing the server directly:
 
 ```bash
 # Make the script executable

@@ -2,6 +2,16 @@
 
 A Model Context Protocol (MCP) server implementation in Rust that enables AI agents to query balances and simulate token swaps on Ethereum.
 
+## Quick Start for AI Agents
+
+This server allows AI agents like Claude to interact with Ethereum through natural conversation:
+
+1. Build: `cargo build --release`
+2. Configure Claude Desktop (see [Configuring with AI Agents](#configuring-with-ai-agents))
+3. Chat with Claude: *"What's the ETH balance of vitalik.eth?"*
+
+**That's it!** The AI will call the blockchain tools automatically.
+
 ## Features
 
 - **Balance Queries**: Query ETH and ERC20 token balances for any address
@@ -53,6 +63,94 @@ The server will:
 2. Verify the connection by fetching the chain ID
 3. Listen for JSON-RPC requests on stdin
 4. Send responses on stdout
+
+## Configuring with AI Agents
+
+This MCP server is designed to be used by AI agents like Claude Desktop, which can call the Ethereum tools through natural conversation.
+
+### Option 1: Claude Desktop (Recommended)
+
+1. **Build the release binary:**
+   ```bash
+   cargo build --release
+   ```
+
+2. **Locate the binary:**
+   ```bash
+   # The binary will be at:
+   # /Users/hikari/src/eth-trading-mcp-server/target/release/eth-trading-mcp-server
+   ```
+
+3. **Configure Claude Desktop:**
+
+   Edit your Claude Desktop config file:
+   - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+   - **Linux:** `~/.config/Claude/claude_desktop_config.json`
+
+   Add this MCP server configuration:
+   ```json
+   {
+     "mcpServers": {
+       "ethereum-trading": {
+         "command": "/Users/hikari/src/eth-trading-mcp-server/target/release/eth-trading-mcp-server",
+         "env": {
+           "ETH_RPC_URL": "https://eth.llamarpc.com"
+         }
+       }
+     }
+   }
+   ```
+
+   **Note:** Replace the path with your actual project path. Use `pwd` in the project directory to get the full path.
+
+4. **Restart Claude Desktop**
+
+5. **Verify installation:**
+   Open Claude Desktop and look for the 🔌 icon indicating MCP servers are connected.
+
+### Option 2: Other MCP Clients
+
+For other MCP-compatible clients, configure them to run:
+```bash
+/path/to/eth-trading-mcp-server/target/release/eth-trading-mcp-server
+```
+
+With environment variable:
+```bash
+ETH_RPC_URL=https://eth.llamarpc.com
+```
+
+### Testing with Natural Language
+
+Once configured with Claude Desktop, you can test the tools by chatting naturally:
+
+**Balance Queries:**
+- "What's the ETH balance of 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045?"
+- "Check the USDC balance for vitalik.eth"
+- "How much ETH does 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb have?"
+
+**Price Queries:**
+- "What's the current price of USDC?" (then provide address: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)
+- "Get me the ETH price" (use 0x0000000000000000000000000000000000000000)
+- "What's the price of token 0x6B175474E89094C44Da98b954EedeAC495271d0F?" (DAI)
+
+**Swap Simulations:**
+- "Simulate swapping 0.1 ETH to USDC for wallet 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+- "How much USDC would I get for 1 ETH?"
+- "Show me the gas cost for swapping 0.5 ETH to DAI"
+
+**Common Token Addresses:**
+- ETH: `0x0000000000000000000000000000000000000000`
+- USDC: `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48`
+- USDT: `0xdAC17F958D2ee523a2206206994597C13D831ec7`
+- DAI: `0x6B175474E89094C44Da98b954EedeAC495271d0F`
+- WETH: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`
+
+The AI agent (Claude) will:
+1. Understand your natural language request
+2. Call the appropriate MCP tool (get_balance, get_token_price, or swap_tokens)
+3. Present the results in a human-friendly format
 
 ## Available Tools
 
@@ -243,7 +341,18 @@ Example initialization:
 
 ## Testing
 
-### Python Test Client
+### Recommended: Test with AI Agent
+
+The best way to test this server is through an AI agent like Claude Desktop (see [Configuring with AI Agents](#configuring-with-ai-agents) above). Simply chat with Claude using natural language like:
+- "What's the ETH balance of vitalik.eth?"
+- "Get the price of USDC"
+- "Simulate swapping 1 ETH to USDC"
+
+### Alternative: Manual Testing
+
+If you want to test the server directly without an AI agent:
+
+#### Python Test Client
 
 A Python test client (`client_example.py`) is provided for easy end-to-end testing of all MCP server functionality:
 

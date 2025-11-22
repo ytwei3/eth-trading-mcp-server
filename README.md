@@ -243,6 +243,50 @@ Example initialization:
 
 ## Testing
 
+### Python Test Client
+
+A Python test client (`client_example.py`) is provided for easy end-to-end testing of all MCP server functionality:
+
+```bash
+# Make the script executable
+chmod +x client_example.py
+
+# Initialize the server
+python3 client_example.py init
+
+# List available tools
+python3 client_example.py list
+
+# Test balance query (example: Vitalik's address)
+python3 client_example.py balance 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+
+# Test token price (example: USDC)
+python3 client_example.py price 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+
+# Test swap simulation (ETH -> USDC)
+python3 client_example.py swap 0x0000000000000000000000000000000000000000 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 0.1 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+```
+
+**Available commands:**
+- `init` - Initialize the MCP server connection
+- `list` - List all available tools
+- `balance <wallet_address>` - Query wallet balance
+- `price <token_address>` - Get token price (use `0x0000000000000000000000000000000000000000` for ETH)
+- `swap <from_token> <to_token> <amount> <wallet_address>` - Simulate token swap
+
+### Bash Test Script
+
+A simple bash script (`test_mcp.sh`) is also provided for quick testing:
+
+```bash
+chmod +x test_mcp.sh
+./test_mcp.sh
+```
+
+This script displays example JSON-RPC requests that can be sent to the server.
+
+### Rust Tests
+
 Run the test suite:
 ```bash
 cargo test
